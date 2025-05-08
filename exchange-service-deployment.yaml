@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exchange-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: exchange-service
+  template:
+    metadata:
+      labels:
+        app: exchange-service
+    spec:
+      containers:
+      - name: exchange-service
+        image: exchange-service:latest
+        ports:
+        - containerPort: 3004
+        env:
+        - name: MONGO_URI
+          value: mongodb://mongo:27017/BookExchangePlatForm_exchanges_db

@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    restart: always
+
+  review-service:
+    build:
+      context: ./review-service
+    ports:
+      - "3001:3000"
+    container_name: review-service
+    restart: always
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGODB_URI_REVIEW_SERVICE=${MONGODB_URI_REVIEW_SERVICE}
+    depends_on:
+      - mongo
+
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "3002:3000"
+    container_name: user-service
+    restart: always
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGODB_URI_USER_SERVICE=${MONGODB_URI_USER_SERVICE}
+    depends_on:
+      - mongo
+
+  book-service:
+    build:
+      context: ./book-service
+    ports:
+      - "3003:3000"
+    container_name: book-service
+    restart: always
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGODB_URI_BOOK_SERVICE=${MONGODB_URI_BOOK_SERVICE}
+    depends_on:
+      - mongo
+
+  exchange-service:
+    build:
+      context: ./exchange-service
+    ports:
+      - "3004:3000"
+    container_name: exchange-service
+    restart: always
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGODB_URI_EXCHANGE_SERVICE=${MONGODB_URI_EXCHANGE_SERVICE}
+    depends_on:
+      - user-service
+      - book-service
+      - mongo
+
